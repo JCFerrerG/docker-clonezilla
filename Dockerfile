@@ -1,7 +1,13 @@
 FROM debian
-MAINTAINER leejoneshane@gmail.com
+LABEL maintainer="leejoneshane@gmail.com"
 
 ENV DEBIAN_FRONTEND noninteractive
+
+ARG LOCALE=zh_TW
+
+ENV LC_ALL $LOCALE
+ENV LANG $LOCALE
+ENV LANGUAGE $LOCALE
 
 RUN apt-get --fix-missing update \
     && apt-get -y --no-install-recommends install zip unzip bzip2 pigz rsync disktype parted pciutils tcpdump \
@@ -16,8 +22,8 @@ RUN apt-get --fix-missing update \
                   libpciaccess0 libsm6 libtcl8.6 libtk8.6 libtxc-dxtn-s2tc0 libutempter0 libx11-xcb1 libxt6 libxv1 \
                   libxxf86dga1 libxxf86vm1 partimage patch tcl-expect tcl8.6 tk8.6 traceroute x11-utils xbitmaps xterm \
                   libxaw7 libxcb-dri2-0 libxcb-dri3-0 libxcb-glx0 libxcb-present0 libxcb-shape0 libxcb-sync1 gnupg \
-    && echo "zh_TW.UTF-8 UTF-8" > /etc/locale.gen \
-    && locale-gen "zh_TW.UTF-8" \
+    && echo "$LOCALE UTF-8" > /etc/locale.gen \
+    && locale-gen "$LOCALE" \
     && dpkg-reconfigure locales \
     && echo "deb http://free.nchc.org.tw/debian/ jessie main" >> /etc/apt/sources.list \
     && echo "deb http://free.nchc.org.tw/drbl-core drbl stable" >> /etc/apt/sources.list \
@@ -26,10 +32,6 @@ RUN apt-get --fix-missing update \
     && apt-get -y install drbl clonezilla partclone ipxe lzop pigz pbzip2 udpcast \
     && apt-get clean all
 
-ENV LANG zh_TW.UTF-8
-ENV LANGUAGE zh_TW.utf-8
-ENV LC_ALL zh_TW.UTF-8
-
 VOLUME ["/tftpboot", "/home/partimag"]
-EXPOSE 68/udp 111/udp 2049/tcp
-CMD ["drbl4imp -e -b -p 40"]
+EXPOSE 68/udp 111/udp 2049/tcp 69/udp 69/tcp
+CMD ["drbl4imp", "-e", "-b", "-p", "40"]
