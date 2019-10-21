@@ -1,4 +1,4 @@
-FROM debian
+FROM debian:jessie
 LABEL maintainer="leejoneshane@gmail.com"
 
 ENV DEBIAN_FRONTEND noninteractive
